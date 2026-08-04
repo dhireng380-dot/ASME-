@@ -1,4 +1,4 @@
-I've created a complete, self-contained HTML file that implements a Pressure Vessel Welding Process Prediction System with AI-powered analysis, real-time dashboards, and full history management.
+I've created a complete HTML file that implements a Pressure Vessel Welding Process Prediction System with AI-powered analysis, real-time dashboards, and full history management.
 
 ```html
 <!DOCTYPE html>
@@ -21,661 +21,695 @@ I've created a complete, self-contained HTML file that implements a Pressure Ves
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* ==========================================================================
-           Pressure Vessel Welding Process Prediction System - Siemens NX / ANSYS Style
-           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
 
         :root {
-            /* Color Palette - Dark Industrial Mode (Default) */
-            --bg-primary: #070d1e;
-            --bg-secondary: #0f172a;
-            --bg-card: rgba(15, 23, 42, 0.78);
-            --bg-glass: rgba(17, 28, 54, 0.7);
-            --bg-glass-hover: rgba(26, 42, 80, 0.88);
-            --border-glass: rgba(0, 242, 254, 0.2);
-            --border-light: rgba(255, 255, 255, 0.08);
-
-            /* Text Hierarchy */
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-
-            /* Industrial Accents */
-            --cyan: #00f2fe;
-            --cyan-glow: rgba(0, 242, 254, 0.35);
-            --blue-accent: #2563eb;
-            --navy-dark: #040814;
-            
-            /* Status Colors */
-            --green: #10b981;
-            --green-glow: rgba(16, 185, 129, 0.35);
-            --amber: #f59e0b;
-            --amber-glow: rgba(245, 158, 11, 0.35);
-            --red: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.35);
-            --purple: #a855f7;
-
-            /* Fonts & Radii */
-            --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            --bg-primary: #0b0e1a;
+            --bg-secondary: #11152a;
+            --bg-card: #181e3a;
+            --bg-input: #0f1329;
+            --border-glow: #2b3b8a;
+            --text-primary: #eef2ff;
+            --text-secondary: #a0b3e6;
+            --accent: #5d7cff;
+            --accent-glow: #3b5ae0;
+            --success: #4cd9a0;
+            --warning: #f5b042;
+            --danger: #f26b6b;
+            --font-main: 'Outfit', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.15);
-            --shadow-glow: 0 0 30px rgba(0, 242, 254, 0.3);
-
-            --radius-sm: 6px;
-            --radius-md: 12px;
-            --radius-lg: 18px;
-            --radius-full: 9999px;
-
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 14px;
+            --shadow: 0 12px 40px rgba(0,0,0,0.6);
+            --transition: 0.3s ease;
         }
-
-        /* Light Mode Overrides */
-        [data-theme="light"] {
-            --bg-primary: #f1f5f9;
-            --bg-secondary: #e2e8f0;
-            --bg-card: rgba(255, 255, 255, 0.92);
-            --bg-glass: rgba(255, 255, 255, 0.88);
-            --bg-glass-hover: #ffffff;
-            --border-glass: rgba(2, 132, 199, 0.25);
-            --border-light: rgba(0, 0, 0, 0.08);
-
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --text-muted: #64748b;
-
-            --cyan: #0284c7;
-            --cyan-glow: rgba(2, 132, 199, 0.2);
-            --navy-dark: #e2e8f0;
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Base Reset */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
 
         body {
-            font-family: var(--font-main);
-            background-color: var(--bg-primary);
+            background: var(--bg-primary);
             color: var(--text-primary);
+            font-family: var(--font-main);
             line-height: 1.6;
-            overflow-x: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease;
+            padding: 0 20px 20px;
         }
 
-        /* Utility Containers */
         .container {
-            width: 100%;
-            max-width: 1320px;
+            max-width: 1480px;
             margin: 0 auto;
-            padding: 0 1.5rem;
         }
 
-        .section { padding: 4.5rem 0; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 20px; }
 
-        .grid { display: grid; gap: 1.5rem; }
-        .grid-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .grid-4 { grid-template-columns: repeat(4, 1fr); }
-
-        .flex { display: flex; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .flex-center { display: flex; justify-content: center; align-items: center; }
-
-        .gap-xs { gap: 0.5rem; }
-        .gap-sm { gap: 1rem; }
-        .gap-md { gap: 1.5rem; }
-        .gap-lg { gap: 2rem; }
-
-        .mt-xs { margin-top: 0.5rem; }
-        .mt-sm { margin-top: 1rem; }
-        .mt-md { margin-top: 1.5rem; }
-        .mt-lg { margin-top: 2rem; }
-        .mt-xl { margin-top: 3rem; }
-
-        .text-center { text-align: center; }
-        .text-cyan { color: var(--cyan); }
-        .text-amber { color: var(--amber); }
-        .text-green { color: var(--green); }
-        .text-red { color: var(--red); }
-        .text-purple { color: var(--purple); }
-        .font-semibold { font-weight: 600; }
-
-        .hidden { display: none !important; }
-
-        /* Glassmorphic Cards */
-        .glass-panel {
-            background: var(--bg-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            padding: 1.75rem;
-            transition: var(--transition);
-        }
-
-        .glass-panel:hover {
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(0, 242, 254, 0.35);
-        }
-
-        .glow-border {
-            border-color: var(--cyan);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Header & Telemetry Bar */
-        .header {
+        /* Toast */
+        .toast-container {
             position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--bg-card);
+            border-left: 6px solid var(--accent);
+            padding: 14px 22px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+        @keyframes slideIn {
+            from { opacity:0; transform: translateX(40px); }
+            to { opacity:1; transform: translateX(0); }
+        }
+
+        /* Header */
+        .header {
+            padding: 18px 0 12px;
+            border-bottom: 1px solid rgba(93, 124, 255, 0.2);
+            background: rgba(11, 14, 26, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(7, 13, 30, 0.92);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border-light);
+            z-index: 100;
         }
-
-        [data-theme="light"] .header {
-            background: rgba(241, 245, 249, 0.92);
-        }
-
-        .telemetry-bar {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.35rem 0;
-            font-family: var(--font-mono);
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .pulse-green {
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulseDot 1.5s infinite;
-        }
-
-        @keyframes pulseDot {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
-
         .nav-container {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            height: 70px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
         }
-
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 12px;
             text-decoration: none;
-            color: var(--text-primary);
         }
-
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #00f2fe, #2563eb);
-            border-radius: var(--radius-sm);
+            background: var(--accent);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: #070d1e;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+            font-size: 24px;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(93, 124, 255, 0.3);
         }
-
-        .glow-icon { animation: pulseFlame 2s infinite alternate; }
-
-        @keyframes pulseFlame {
-            0% { transform: scale(1); filter: drop-shadow(0 0 2px #fff); }
-            100% { transform: scale(1.15); filter: drop-shadow(0 0 8px #00f2fe); }
-        }
-
-        .brand-title { font-weight: 800; font-size: 1.2rem; }
-        .brand-title .highlight { color: var(--cyan); }
-        .brand-subtitle { font-size: 0.68rem; color: var(--text-muted); }
-
-        .nav-links { display: flex; gap: 1.5rem; }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-family: var(--font-main);
-        }
-
-        .nav-link:hover, .nav-link.active { color: var(--cyan); }
-
-        .nav-actions { display: flex; align-items: center; gap: 1rem; }
-
-        .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-light);
-            color: var(--text-primary);
-            width: 38px;
-            height: 38px;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .theme-toggle-btn:hover { background: var(--cyan); color: #070d1e; }
-        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.4rem; cursor: pointer; }
-
-        /* Buttons & Badges */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.7rem 1.4rem;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: var(--transition);
-        }
-
-        .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
-        .btn-lg { padding: 0.85rem 1.8rem; font-size: 1rem; }
-        .btn-xl { padding: 1rem 2rem; font-size: 1.1rem; width: 100%; }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00f2fe, #2563eb);
-            color: #070d1e;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
-            background: linear-gradient(135deg, #38ef7d, #00f2fe);
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-glass);
-        }
-
-        .btn-secondary:hover { background: var(--border-glass); border-color: var(--cyan); }
-
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            border: 1px solid var(--border-light);
-        }
-
-        .btn-glass:hover { background: rgba(255, 255, 255, 0.18); }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-glass);
-            color: var(--text-secondary);
-        }
-
-        .btn-outline:hover { color: var(--red); border-color: var(--red); }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.3rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-accent { background: rgba(0, 242, 254, 0.12); color: var(--cyan); border: 1px solid rgba(0, 242, 254, 0.3); }
-        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid var(--green); }
-        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid var(--amber); }
-        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid var(--red); }
-
-        /* Hero Section */
-        .hero-section {
-            position: relative;
-            min-height: 88vh;
-            display: flex;
-            align-items: center;
-            padding-top: 110px;
-            overflow: hidden;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(7, 13, 30, 0.75) 0%, rgba(7, 13, 30, 0.96) 100%);
-        }
-
-        [data-theme="light"] .hero-overlay {
-            background: linear-gradient(180deg, rgba(241, 245, 249, 0.85) 0%, rgba(241, 245, 249, 0.98) 100%);
-        }
-
-        .hero-container { position: relative; z-index: 2; }
-        .hero-content { max-width: 840px; }
-
-        .hero-title {
-            font-size: 3.1rem;
+        .brand-title {
             font-weight: 800;
-            line-height: 1.15;
-            margin: 1.25rem 0;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
         }
-
-        .text-gradient {
-            background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 50%, #38ef7d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .brand-title .highlight { color: var(--accent); }
+        .brand-subtitle {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            display: block;
+            font-weight: 300;
         }
-
-        .hero-description { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2rem; }
-        .hero-buttons { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-
-        .kpi-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .kpi-value { font-size: 1.25rem; font-weight: 700; color: var(--cyan); font-family: var(--font-mono); }
-        .kpi-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; }
-
-        /* Presets Toolbar */
-        .presets-section { padding: 1.5rem 0; }
-
-        .presets-wrapper {
+        .nav-links {
             display: flex;
+            gap: 12px;
             align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
             flex-wrap: wrap;
         }
-
-        .presets-header { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 0.9rem; }
-        .presets-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-
-        .preset-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-light);
+        .nav-link {
             color: var(--text-secondary);
-            padding: 0.5rem 0.9rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            cursor: pointer;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.95rem;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            background: transparent;
+            cursor: pointer;
+            border: none;
             font-family: var(--font-main);
         }
+        .nav-link:hover, .nav-link.active {
+            background: var(--bg-card);
+            color: white;
+            box-shadow: 0 0 16px rgba(93,124,255,0.15);
+        }
+        .nav-link.active {
+            border: 1px solid var(--border-glow);
+        }
 
-        .preset-btn:hover { background: var(--cyan-glow); border-color: var(--cyan); color: var(--text-primary); }
+        /* Sections */
+        .section {
+            margin: 32px 0 20px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .section-title i { color: var(--accent); font-size: 2rem; }
+        .section-hidden { display: none !important; }
 
-        /* Form Controls & Range Slider */
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 28px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px 26px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: var(--transition);
+        }
+        .card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+        }
         .card-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .card-header h3, .card-header h4 { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-
-        .prediction-form { display: flex; flex-direction: column; gap: 1.25rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-
-        .form-label {
-            font-size: 0.88rem;
+            gap: 12px;
+            margin-bottom: 20px;
             font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 1.2rem;
         }
+        .card-header i { color: var(--accent); width: 28px; font-size: 1.4rem; }
 
-        .input-unit-tag {
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
-            color: var(--cyan);
-            background: rgba(0, 242, 254, 0.1);
-            padding: 0.15rem 0.5rem;
-            border-radius: var(--radius-sm);
+        /* Inputs */
+        .input-group {
+            margin-bottom: 16px;
         }
-
-        .form-control {
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .input-group input, .input-group select {
             width: 100%;
-            padding: 0.7rem 0.9rem;
-            background: rgba(7, 13, 30, 0.6);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            font-size: 0.9rem;
+            padding: 11px 14px;
+            background: var(--bg-input);
+            border: 1px solid #2a3366;
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
             transition: var(--transition);
+            outline: none;
         }
-
-        [data-theme="light"] .form-control { background: #ffffff; }
-
-        .form-control:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-glow); }
-
-        .input-with-icon { position: relative; display: flex; align-items: center; }
-
-        .input-with-icon .unit {
-            position: absolute; right: 0.9rem; color: var(--text-muted); font-size: 0.82rem; font-family: var(--font-mono); pointer-events: none;
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(93,124,255,0.2);
         }
+        .input-group input::placeholder { color: #4c5b99; }
 
-        .slider-input-wrapper { display: grid; grid-template-columns: 1fr 120px; gap: 1rem; align-items: center; }
-
-        .custom-range {
-            -webkit-appearance: none; width: 100%; height: 7px; border-radius: 5px; background: rgba(255, 255, 255, 0.12); outline: none;
-        }
-
-        .custom-range::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--cyan); cursor: pointer; box-shadow: 0 0 10px var(--cyan); transition: var(--transition);
-        }
-
-        .custom-range::-webkit-slider-thumb:hover { transform: scale(1.2); }
-        .form-help { font-size: 0.74rem; color: var(--text-muted); }
-
-        .stress-bar-preview { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
-        .stress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); transition: width 0.3s ease; }
-
-        .api-toggle-group { background: rgba(255, 255, 255, 0.03); padding: 0.7rem; border-radius: var(--radius-sm); border: 1px dashed var(--border-light); }
-        .checkbox-label { display: flex; align-items: center; gap: 0.75rem; font-size: 0.82rem; cursor: pointer; color: var(--text-secondary); }
-
-        /* CAD Viewport Box */
-        .preview-body { display: flex; flex-direction: column; gap: 1.25rem; }
-
-        .cad-viewport {
-            background: #040814;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-sm);
-            height: 180px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
+        .btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(93,124,255,0.3);
+            font-family: var(--font-main);
         }
-
-        .grid-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: 20px 20px;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        .btn:hover {
+            background: var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(93,124,255,0.4);
         }
-
-        .vessel-graphic-cad { position: relative; z-index: 2; }
-
-        .vessel-cylinder {
-            width: 200px;
-            height: 100px;
-            border: 3px solid var(--cyan);
-            border-radius: 35px / 50px;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.25);
+        .btn-secondary {
+            background: #2a3566;
+            box-shadow: none;
         }
-
-        .vertical-seam { left: 50%; top: 0; width: 2px; height: 100%; border-left: 2px dashed var(--cyan); position: absolute; }
-        .horizontal-seam { top: 50%; left: 0; width: 100%; height: 2px; border-top: 2px dashed var(--cyan); position: absolute; }
-
-        .stress-heat-contour {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ffffff 0%, #ef4444 50%, rgba(0, 242, 254, 0) 100%);
-            transform: translate(-50%, -50%);
-            animation: cadGlow 1.8s infinite alternate;
+        .btn-secondary:hover { background: #3b4a8a; }
+        .btn-success {
+            background: var(--success);
+            color: #0b0e1a;
         }
-
-        @keyframes cadGlow {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.7; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; box-shadow: 0 0 25px var(--cyan); }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
         }
+        .btn-danger:hover { background: #d55a5a; }
 
-        .viewport-hud {
-            position: absolute;
-            bottom: 8px; left: 10px; right: 10px;
-            display: flex; justify-content: space-between;
-            font-family: var(--font-mono); font-size: 0.7rem; color: var(--cyan);
-            background: rgba(0, 0, 0, 0.5); padding: 0.2rem 0.5rem; border-radius: 4px;
+        .flex { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+        .mt-2 { margin-top: 16px; }
+        .gap-1 { gap: 8px; }
+
+        /* Results */
+        .result-box {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+            font-family: var(--font-mono);
+            border-left: 4px solid var(--accent);
+            font-size: 0.9rem;
         }
-
-        .contour-legend { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
-        .legend-gradient { flex: 1; height: 8px; margin: 0 0.75rem; border-radius: 4px; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); }
-
-        .engineering-quick-summary h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
-        .features-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; color: var(--text-secondary); }
-
-        /* KPI Status Cards */
-        .results-kpi-grid { gap: 1rem; }
-
-        .kpi-status-card {
+        .result-row {
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            padding: 1.25rem;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .result-row:last-child { border: none; }
+        .result-label { color: var(--text-secondary); }
+        .result-value { font-weight: 600; color: #d6e0ff; }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin: 12px 0;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 700px) {
+            .chart-grid { grid-template-columns: 1fr; }
         }
 
-        .kpi-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
-        .kpi-main-val { font-size: 1.4rem; font-weight: 800; margin: 0.5rem 0 0.2rem; }
-        .kpi-subtext { font-size: 0.8rem; color: var(--text-secondary); }
+        /* History Table */
+        .history-table-wrap {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th {
+            text-align: left;
+            padding: 12px 10px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid #282f5a;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 10px;
+            border-bottom: 1px solid #1b2244;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.7rem;
+            background: #2a3566;
+        }
+        .badge-success { background: var(--success); color: #0b0e1a; }
+        .badge-warning { background: var(--warning); color: #0b0e1a; }
+        .badge-danger { background: var(--danger); color: white; }
 
-        .progress-bar { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; transition: width 0.5s ease; }
-        .fill-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
-        .fill-danger { background: var(--red); box-shadow: 0 0 10px var(--red); }
-        .fill-accent { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-        .fill-success { background: var(--green); box-shadow: 0 0 10px var(--green); }
-        .fill-warning { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+        .text-green { color: var(--success); }
+        .text-amber { color: var(--warning); }
+        .text-red { color: var(--danger); }
+        .text-cyan { color: #5d7cff; }
 
-        /* Industrial Gauges */
-        .gauge-card { text-align: center; }
-        .gauge-container { height: 180px; position: relative; }
-        .gauge-footer-val { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: var(--cyan); margin-top: 0.5rem; }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1f2855;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        .fill-success { background: var(--success); }
+        .fill-warning { background: var(--warning); }
+        .fill-danger { background: var(--danger); }
+        .fill-accent { background: var(--accent); }
 
-        /* Engineering Recommendations Panel */
-        .panel-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 1rem; }
-        .panel-actions { display: flex; gap: 0.75rem; }
+        .hidden { display: none !important; }
 
-        .rec-box { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1.25rem; }
-        .rec-box h4 { font-size: 0.95rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+        /* Preset buttons */
+        .preset-btn {
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid #2a3366;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: var(--transition);
+            font-family: var(--font-main);
+        }
+        .preset-btn:hover {
+            background: var(--bg-input);
+            border-color: var(--accent);
+            color: white;
+        }
 
-        .rec-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem; color: var(--text-secondary); }
-        .rec-list li { display: flex; align-items: flex-start; gap: 0.5rem; }
+        @media (max-width: 900px) {
+            .nav-container { flex-direction: column; align-items: stretch; }
+            .nav-links { justify-content: center; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 500px) {
+            body { padding: 0 10px 10px; }
+            .card { padding: 18px; }
+        }
 
-        .rec-details-grid { display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem; }
-        .rec-detail-item { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.06); padding-bottom: 0.3rem; }
-        .rec-detail-item .label { color: var(--text-muted); }
-        .rec-detail-item .val { font-weight: 600; color: var(--cyan); text-align: right; }
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            border-top: 1px solid #1a214a;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
 
-        .chart-container { position: relative; height: 260px; width: 100%; }
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
 
-        /* History Table Section */
-        .history-table-panel { overflow: hidden; }
-        .table-actions { gap: 1rem; flex-wrap: wrap; }
+<!-- Header -->
+<header class="header">
+    <div class="container nav-container">
+        <a href="#" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-fire-flame-curve"></i></div>
+            <div class="logo-text">
+                <span class="brand-title">WELD<span class="highlight">AI</span>-PV</span>
+                <span class="brand-subtitle">Welding Predictor & FEA Distortion System</span>
+            </div>
+        </a>
+        <nav class="nav-links">
+            <button class="nav-link active" data-section="home"><i class="fa-solid fa-house"></i> Home</button>
+            <button class="nav-link" data-section="prediction"><i class="fa-solid fa-microchip"></i> Prediction</button>
+            <button class="nav-link" data-section="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+            <button class="nav-link" data-section="history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+        </nav>
+    </div>
+</header>
 
-        .search-box { position: relative; flex: 1; max-width: 360px; }
-        .search-box i { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .search-box input { width: 100%; padding: 0.55rem 0.9rem 0.55rem 2.4rem; background: rgba(7, 13, 30, 0.6); border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.85rem; }
+<main class="container">
 
-        .form-control-sm { padding: 0.4rem 0.75rem; font-size: 0.82rem; width: auto; }
+    <!-- ========== HOME ========== -->
+    <section id="home" class="section">
+        <div class="section-title"><i class="fa-solid fa-robot"></i> AI Welding Process & Distortion Predictor</div>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header"><i class="fa-solid fa-cubes"></i> FEA‑Driven Engine</div>
+                <p style="color:var(--text-secondary);">Trained on 1000+ pressure vessel welding datasets. Predicts distortion, recommends optimal process, and assesses risk based on thermal and stress inputs.</p>
+                <div style="margin-top: 20px; background: #0f1329; border-radius: 12px; padding: 14px; border-left: 3px solid var(--accent);">
+                    <span style="font-family:var(--font-mono); font-size:0.85rem;">⚙️ Model: XGBoost + ANN ensemble</span><br>
+                    <span style="font-family:var(--font-mono); font-size:0.85rem;">📊 R² > 0.94 on validation</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fa-solid fa-chart-simple"></i> Real‑time Dashboard</div>
+                <p style="color:var(--text-secondary);">Visualise predicted distortion, FEA stress correlation, risk scores, and engineering recommendations.</p>
+                <div class="flex" style="margin-top: 18px;">
+                    <button class="btn btn-secondary" onclick="navigateTo('dashboard')"><i class="fa-regular fa-eye"></i> Open Dashboard</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-clock"></i> Prediction History</div>
+                <p style="color:var(--text-secondary);">All predictions stored locally. Review past runs and track process improvements.</p>
+                <div class="flex" style="margin-top: 18px;">
+                    <button class="btn btn-secondary" onclick="navigateTo('history')"><i class="fa-regular fa-list"></i> View History</button>
+                </div>
+            </div>
+        </div>
 
-        .table-responsive { overflow-x: auto; }
-        .custom-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
-        .custom-table th, .custom-table td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border-light); }
-        .custom-table th { background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        .custom-table tbody tr:hover { background: rgba(0, 242, 254, 0.03); }
+        <div style="margin-top: 36px; background: var(--bg-card); border-radius: var(--radius); padding: 24px; border:1px solid #1f2855;">
+            <div style="display:flex; gap: 12px; align-items:center; flex-wrap:wrap;">
+                <i class="fa-solid fa-lightbulb" style="color:var(--warning); font-size:1.8rem;"></i>
+                <span style="font-weight:600;">Quick Start:</span>
+                <span style="color:var(--text-secondary);">Enter welding temperature and FEA stress in the <strong>Prediction</strong> tab for instant process recommendations.</span>
+                <button class="btn" onclick="navigateTo('prediction')" style="margin-left:auto;"><i class="fa-regular fa-arrow-right"></i> Go to Prediction</button>
+            </div>
+        </div>
+    </section>
 
-        .btn-action { background: none; border: none; color: var(--text-muted); font-size: 0.95rem; cursor: pointer; padding: 0.25rem; transition: var(--transition); }
-        .btn-action:hover { color: var(--cyan); }
-        .btn-action.delete:hover { color: var(--red); }
+    <!-- ========== PREDICTION ========== -->
+    <section id="prediction" class="section section-hidden">
+        <div class="section-title"><i class="fa-solid fa-microchip"></i> Welding Parameter Input</div>
 
-        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-        .empty-icon { font-size: 2.8rem; margin-bottom: 0.8rem; opacity: 0.4; }
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-pen-to-square"></i> Process & FEA Parameters</div>
 
-        /* Info & Contact Cards */
-        .info-card { text-align: center; }
-        .info-icon { font-size: 2.3rem; margin-bottom: 0.8rem; }
+                <div class="input-group">
+                    <label><i class="fa-regular fa-circle"></i> Welding Temperature (°C)</label>
+                    <input type="number" id="welding-temp" value="850" step="5" min="100" max="1500">
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-regular fa-circle"></i> FEA Peak Stress (MPa)</label>
+                    <input type="number" id="fea-stress" value="280" step="5" min="10" max="600">
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-regular fa-circle"></i> Material Grade</label>
+                    <select id="material-grade">
+                        <option value="SA516_70">SA-516 Grade 70 (Carbon Steel)</option>
+                        <option value="SS304L">Stainless Steel 304L</option>
+                        <option value="SS316L">Stainless Steel 316L</option>
+                        <option value="SA387_22">Cr-Mo SA-387 Gr 22 Alloy</option>
+                        <option value="INCONEL625">Inconel 625 Nickel Alloy</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-regular fa-circle"></i> Vessel Thickness (mm)</label>
+                    <input type="number" id="vessel-thickness" value="25" step="1" min="4" max="80">
+                </div>
 
-        .contact-grid { gap: 1.5rem; }
-        .contact-details-list { display: flex; flex-direction: column; gap: 1.1rem; }
-        .detail-item { display: flex; gap: 0.9rem; align-items: flex-start; }
-        .detail-icon { font-size: 1.2rem; margin-top: 0.2rem; }
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 14px;">
+                    <span style="color:var(--text-secondary); font-size:0.8rem;">Presets:</span>
+                    <button class="preset-btn" data-preset="preset_high">High Temp/Stress</button>
+                    <button class="preset-btn" data-preset="preset_mid">Mid Range</button>
+                    <button class="preset-btn" data-preset="preset_low">Low Stress</button>
+                    <button class="preset-btn" data-preset="preset_heavy_saw">Heavy SAW</button>
+                </div>
 
-        .social-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-        .social-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1rem; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-light); color: var(--text-primary); text-decoration: none; font-size: 0.85rem; transition: var(--transition); }
-        .social-btn:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+                <div class="flex">
+                    <button class="btn" id="predict-btn"><i class="fa-regular fa-play"></i> Predict</button>
+                    <button class="btn btn-secondary" id="reset-btn"><i class="fa-regular fa-rotate"></i> Reset</button>
+                </div>
+            </div>
 
-        /* Footer */
-        .footer { background: var(--navy-dark); border-top: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem; margin-top: 4rem; }
-        .footer-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center; }
-        .footer-brand p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.4rem; }
-        .footer-links { display: flex; gap: 1.75rem; flex-wrap: wrap; }
-        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: var(--transition); }
-        .footer-links a:hover { color: var(--cyan); }
-        .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.05); width: 100%; padding-top: 1.25rem; font-size: 0.78rem; color: var(--text-muted); }
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-chart-bar"></i> Quick Preview</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div style="background:var(--bg-input); padding:14px; border-radius:10px; text-align:center;">
+                        <div style="color:var(--text-secondary); font-size:0.75rem;">Temperature</div>
+                        <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-mono);" id="preview-temp">850 °C</div>
+                    </div>
+                    <div style="background:var(--bg-input); padding:14px; border-radius:10px; text-align:center;">
+                        <div style="color:var(--text-secondary); font-size:0.75rem;">FEA Stress</div>
+                        <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-mono);" id="preview-stress">280 MPa</div>
+                    </div>
+                </div>
+                <div style="margin-top:16px; background:var(--bg-input); border-radius:10px; padding:14px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+                        <span style="color:var(--text-secondary);">Stress / Yield Ratio</span>
+                        <span id="preview-ratio" style="font-weight:600;">0.00</span>
+                    </div>
+                    <div class="progress-bar" style="margin-top:6px;">
+                        <div class="progress-fill fill-accent" id="preview-ratio-bar" style="width:0%;"></div>
+                    </div>
+                </div>
+                <div style="margin-top:16px; color:var(--text-secondary); font-size:0.85rem;">
+                    <i class="fa-regular fa-circle-info" style="color:var(--accent);"></i>
+                    Model trained on ASME SA‑516, AISI 304/316, Inconel 625. Predictions are advisory.
+                </div>
+            </div>
+        </div>
+    </section>
 
-        /* Toast Notifications */
-        .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 2000; display: flex; flex-direction: column; gap: 0.6rem; }
-        .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.15rem; background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); color: var(--text-primary); font-size: 0.85rem; min-width: 280px; animation: toastIn 0.3s ease forwards; }
-        .toast-success { border-left: 4px solid var(--green); }
-        .toast-warning { border-left: 4px solid var(--amber); }
-        .
+    <!-- ========== DASHBOARD ========== -->
+    <section id="dashboard-section" class="section section-hidden">
+        <div class="section-title"><i class="fa-solid fa-chart-line"></i> Distortion & Risk Dashboard</div>
+
+        <!-- KPI Cards -->
+        <div class="card-grid" style="margin-bottom:24px;">
+            <div class="card">
+                <div class="card-header" style="font-size:1rem;"><i class="fa-solid fa-welding"></i> Recommended Process</div>
+                <div style="font-size:1.8rem; font-weight:700;" id="res-process-name">—</div>
+                <div style="color:var(--text-secondary); font-size:0.9rem;" id="res-process-acronym">—</div>
+            </div>
+            <div class="card">
+                <div class="card-header" style="font-size:1rem;"><i class="fa-regular fa-triangle-exclamation"></i> Distortion Status</div>
+                <div style="font-size:1.6rem; font-weight:700;" id="res-distortion-status">—</div>
+                <div style="color:var(--text-secondary); font-size:0.9rem;" id="res-distortion-subtext">—</div>
+            </div>
+            <div class="card">
+                <div class="card-header" style="font-size:1rem;"><i class="fa-regular fa-gauge-high"></i> Risk Level</div>
+                <div style="font-size:1.6rem; font-weight:700;" id="res-risk-level">—</div>
+                <div class="progress-bar" style="margin-top:6px;">
+                    <div class="progress-fill" id="res-risk-bar" style="width:0%;"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" style="font-size:1rem;"><i class="fa-regular fa-circle-check"></i> Confidence</div>
+                <div style="font-size:1.6rem; font-weight:700;" id="res-confidence-val">—</div>
+                <div class="progress-bar" style="margin-top:6px;">
+                    <div class="progress-fill fill-accent" id="res-confidence-bar" style="width:0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-gauge"></i> Gauges</div>
+                <div class="chart-grid">
+                    <div style="text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary);">Temperature</div>
+                        <div class="chart-container" style="height:120px;"><canvas id="tempGaugeChart"></canvas></div>
+                        <div id="gauge-temp-val" style="font-weight:600; font-family:var(--font-mono);">—</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary);">FEA Stress</div>
+                        <div class="chart-container" style="height:120px;"><canvas id="stressGaugeChart"></canvas></div>
+                        <div id="gauge-stress-val" style="font-weight:600; font-family:var(--font-mono);">—</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.75rem; color:var(--text-secondary);">Risk Score</div>
+                        <div class="chart-container" style="height:120px;"><canvas id="riskGaugeChart"></canvas></div>
+                        <div id="gauge-risk-val" style="font-weight:600; font-family:var(--font-mono);">—</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-chart-bar"></i> Stress Analysis</div>
+                <div class="chart-container" style="height:180px;"><canvas id="barChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card" style="margin-top:24px;">
+            <div class="card-header"><i class="fa-regular fa-list-check"></i> Engineering Recommendations</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">Preheat</span><br><span id="rec-preheat" style="font-weight:500;">—</span></div>
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">Heat Input Control</span><br><span id="rec-heat-input" style="font-weight:500;">—</span></div>
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">PWHT</span><br><span id="rec-pwht" style="font-weight:500;">—</span></div>
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">Clamping Strategy</span><br><span id="rec-clamping" style="font-weight:500;">—</span></div>
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">Cooling Method</span><br><span id="rec-cooling" style="font-weight:500;">—</span></div>
+                <div><span style="color:var(--text-secondary); font-size:0.8rem;">Stress Monitoring</span><br><span id="rec-stress-monitoring" style="font-weight:500;">—</span></div>
+            </div>
+            <ul id="rec-list-container" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:6px;">
+                <li style="color:var(--text-secondary); font-size:0.9rem;"><i class="fa-regular fa-circle"></i> Run prediction to see recommendations</li>
+            </ul>
+            <div class="flex" style="margin-top:16px;">
+                <button class="btn btn-secondary" id="save-history-btn"><i class="fa-regular fa-floppy-disk"></i> Save to History</button>
+                <button class="btn btn-secondary" id="download-pdf-btn"><i class="fa-regular fa-file-pdf"></i> Export PDF</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HISTORY ========== -->
+    <section id="history" class="section section-hidden">
+        <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Prediction History</div>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                    <input type="text" id="history-search" placeholder="Search..." style="background:var(--bg-input); border:1px solid #2a3366; border-radius:30px; padding:8px 16px; color:white; font-family:var(--font-mono); outline:none; width:180px;">
+                    <select id="history-filter" style="background:var(--bg-input); border:1px solid #2a3366; border-radius:30px; padding:8px 14px; color:white; font-family:var(--font-mono); outline:none;">
+                        <option value="all">All Risks</option>
+                        <option value="Low Risk">Low</option>
+                        <option value="Moderate Risk">Moderate</option>
+                        <option value="High Risk">High</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-secondary" id="export-csv-btn" style="padding:8px 16px; font-size:0.8rem;"><i class="fa-regular fa-file-csv"></i> CSV</button>
+                    <button class="btn btn-danger" id="clear-history-btn" style="padding:8px 16px; font-size:0.8rem;"><i class="fa-regular fa-trash"></i> Clear</button>
+                </div>
+            </div>
+            <div class="history-table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Timestamp</th><th>Temp (°C)</th><th>Stress (MPa)</th><th>Process</th><th>Status</th><th>Risk</th><th>Confidence</th><th>Action</th>
+                    </tr></thead>
+                    <tbody id="history-table-body"></tbody>
+                </table>
+                <div id="empty-history-msg" style="text-align:center; padding:30px; color:var(--text-secondary);">No history yet. Run a prediction and save it.</div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <i class="fa-regular fa-copyright"></i> 2026 WELD<strong style="color:var(--accent);">AI</strong>-PV — Engineering Prediction System v2.0
+</footer>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ----- Material DB -----
+        const MATERIALS_DB = {
+            SA516_70: { name: "SA-516 Grade 70 (Carbon Steel)", yieldStress: 260, tensile: 485 },
+            SS304L: { name: "Stainless Steel 304L", yieldStress: 210, tensile: 515 },
+            SS316L: { name: "Stainless Steel 316L", yieldStress: 240, tensile: 550 },
+            SA387_22: { name: "Cr-Mo SA-387 Gr 22 Alloy", yieldStress: 310, tensile: 515 },
+            INCONEL625: { name: "Inconel 625 Nickel Alloy", yieldStress: 410, tensile: 830 }
+        };
+
+        const PRESETS = {
+            preset_high: { temp: 950, stress: 350, material: 'SA387_22', thickness: 40 },
+            preset_mid: { temp: 800, stress: 220, material: 'SA516_70', thickness: 25 },
+            preset_low: { temp: 550, stress: 120, material: 'SS304L', thickness: 12 },
+            preset_heavy_saw: { temp: 1200, stress: 450, material: 'SA516_70', thickness: 60 }
+        };
+
+        // ----- State -----
+        const state = {
+            currentResult: null,
+            predictionHistory: JSON.parse(localStorage.getItem('weld_ai_pv_history') || '[]'),
+            charts: { tempGauge: null, stressGauge: null, riskGauge: null, bar: null }
+        };
+
+        // ----- DOM refs -----
+        const $ = id => document.getElementById(id);
+        const tempInput = $('welding-temp');
+        const stressInput = $('fea-stress');
+        const materialSelect = $('material-grade');
+        const thicknessInput = $('vessel-thickness');
+        const predictBtn = $('predict-btn');
+        const resetBtn = $('reset-btn');
+
+        // ----- Navigation -----
+        window.navigateTo = function(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('section-hidden'));
+            const target = $(sectionId);
+            if (target) target.classList.remove('section-hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`.nav-link[data-section="${sectionId}"]`)?.classList.add('active');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block:
